@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/cv04/testout.txt
+/cv04/testin.txt
