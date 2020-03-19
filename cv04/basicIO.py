@@ -28,7 +28,6 @@ def allignAndPrint(inputFile, outputFile, numChars):
         if linetobe != '':
             print(linetobe, file=outputFile)
 
-
 if (len(sys.argv) < 3) | (len(sys.argv) >= 5):
     print('incorrect usage', len(sys.argv))
 else:
