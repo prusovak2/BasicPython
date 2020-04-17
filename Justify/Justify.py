@@ -4,6 +4,7 @@ from sys import stdin
 
 class WordReader:
     EndOfColumn = False
+    EndOfFile = False
     fileToRead = ""
 
     def __init__(self, file):
@@ -16,9 +17,13 @@ class WordReader:
         for line in self.fileToRead:
             if line.strip() == "":
                 self.EndOfColumn = True
+                while line.strip() == "":
+                    try:
+                        line = next(self.fileToRead)
+                    except StopIteration:
+                        self.EndOfFile = True
+                        return ""
                 yield ""
-            while line.strip() == "":
-                line = next(self.fileToRead)
             words = line.split()
             for word in words:
                 self.EndOfColumn = False
@@ -130,7 +135,7 @@ class LineMaker:
                 self.wordReader.EndOfColumn = True
                 self.BuildAndPrintLine(wordToBeAdded, endOfFile=True)
                 break
-            self.BuildAndPrintLine(wordToBeAdded, endOfFile=False)
+            self.BuildAndPrintLine(wordToBeAdded, self.wordReader.EndOfFile)
             if followingWord == "":
                 try:
                     wordToBeAdded = next(self.WordGenerator)
