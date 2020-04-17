@@ -120,6 +120,8 @@ class LineMaker:
 
     def Justify(self):
         wordToBeAdded = next(self.WordGenerator)
+        if wordToBeAdded == "":
+            wordToBeAdded = next(self.WordGenerator)
         followingWord = ""
         while True:
             try:
@@ -157,7 +159,7 @@ if width < 1:
     print("Error")
     exit(1)
 
-reader = WordReader("stdin")
+reader = WordReader("testFile.in")
 lineMaker = LineMaker(width, reader)
 lineMaker.Justify()
 
