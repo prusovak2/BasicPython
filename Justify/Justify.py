@@ -6,7 +6,6 @@ class WordReader:
     EndOfColumn = False
     EndOfFile = False
     fileToRead = ""
-    ColumnBuffer = ""
 
     def __init__(self, file):
         if file == "stdin":
@@ -37,6 +36,7 @@ class LineMaker:
     WordGenerator = None
     wordReader = None
     wordWaiting = ""
+    ColumnBuffer = ""
 
     def __init__(self, width, wordReader):
         self.WidthOfLine = width
@@ -107,23 +107,29 @@ class LineMaker:
             # I need to print what is stored in line first
             line = self.PrepareLineToBePrinted(endOfColumn=False)  # this line does not end the column
             # not fitting word is stored in self.WordWaiting
-            print(line)
+            #print(line)
+            self.ColumnBuffer += line + '\n'
             self.ClearLine()
             self.TryAddWord(self.wordWaiting)  # add non fitting word on a new line
             self.wordWaiting = ""
             line = self.PrepareLineToBePrinted(self.wordReader.EndOfColumn)
-            print(line)  # print line containing only one word
+            self.ColumnBuffer += line + '\n'  # print line containing only one word
             if not endOfFile:
-                print()  # one line between columns
+                self.ColumnBuffer += '\n'  # one line between columns
+            print(self.ColumnBuffer, end='')
+            self.ColumnBuffer = ""
         elif self.wordReader.EndOfColumn:  # the last line of the column
             line = self.PrepareLineToBePrinted(self.wordReader.EndOfColumn)
-            print(line)
+            self.ColumnBuffer += line + '\n'
             if not endOfFile:
-                print()  # one line between columns
+                self.ColumnBuffer += '\n'  # one line between columns
+            print(self.ColumnBuffer, end='')
+            self.ColumnBuffer = ""
         else:  # a regular finished line
             line = self.PrepareLineToBePrinted(self.wordReader.EndOfColumn)
-            print(line)
-        self.ClearLine() # it has just been printed
+            # print(line)
+            self.ColumnBuffer += line + '\n'
+        self.ClearLine()  # it has just been printed
         if self.wordWaiting != "":
             self.TryAddWord(self.wordWaiting)  # it has to fit - it's gonna be the first word on line
             self.wordWaiting = ""
