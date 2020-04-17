@@ -157,7 +157,7 @@ if width < 1:
     print("Error")
     exit(1)
 
-reader = WordReader("stdin")
+reader = WordReader("in.txt")
 lineMaker = LineMaker(width, reader)
 lineMaker.Justify()
 
