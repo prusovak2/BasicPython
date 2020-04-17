@@ -6,6 +6,7 @@ class WordReader:
     EndOfColumn = False
     EndOfFile = False
     fileToRead = ""
+    ColumnBuffer = ""
 
     def __init__(self, file):
         if file == "stdin":
@@ -77,14 +78,22 @@ class LineMaker:
         baseSpaces = (spacesToAdd // spacesToFill) + 1  # an amount of space chars to be put into every space between words
         spacesToDistribute = spacesToAdd % spacesToFill  # additional spaces to be added from left
         line = ""
-        for i in range(0, spacesToDistribute):
+        i = 0
+        while i < spacesToDistribute:
             line += self.WordsOnLine[i]
-            for j in range(0, baseSpaces+1):  # to the first spacesToDistribute spaces add one more space above baseSpaces
+            j = 0
+            while j < (baseSpaces + 1):  # to the first spacesToDistribute spaces add one more space above baseSpaces
                 line += " "
-        for i in range(spacesToDistribute, spacesToFill):
+                j += 1
+            i += 1
+        i = spacesToDistribute
+        while i < spacesToFill:
             line += self.WordsOnLine[i]
-            for j in range(0, baseSpaces):  # rest of spaces fill with baseSpaces spaces
+            j = 0
+            while j < baseSpaces: # rest of spaces fill with baseSpaces spaces
                 line += " "
+                j += 1
+            i += 1
         # add the last word with no spaces behind it
         line += self.WordsOnLine[spacesToFill]  # spacesToFill = wordsOnLine.Count() -1
         return line
@@ -164,7 +173,7 @@ if width < 1:
     print("Error")
     exit(1)
 
-reader = WordReader("testFile.in")
+reader = WordReader("stdin")
 lineMaker = LineMaker(width, reader)
 lineMaker.Justify()
 
