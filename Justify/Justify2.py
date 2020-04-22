@@ -7,29 +7,32 @@ class WordReader:
     EndOfFile = False
     fileToRead = ""
     words = list()
+    line = ""
 
     def __init__(self, file):
         if file == "stdin":
             self.fileToRead = stdin
         else:
             self.fileToRead = open(file, mode='r')
+        self.line = self.fileToRead.readline()
 
     def ReadColumn(self):
-        line = self.fileToRead.readline()
-        while line.strip() == "":
-            if line == "":
+        while self.line.strip() == "":
+            if self.line == "":
                 self.EndOfFile = True
-            line = self.fileToRead.readline()
-        while line.strip() != "":
-            for word in line.split():
+                return
+            self.line = self.fileToRead.readline()
+        while self.line.strip() != "":
+            for word in self.line.split():
                 self.words.append(word)
-            if line == "":
+            if self.line == "":
                 self.EndOfFile = True
-            line = self.fileToRead.readline()
-        while line.strip() == "":
-            if line == "":
+            self.line = self.fileToRead.readline()
+        while self.line.strip() == "":
+            if self.line == "":
                 self.EndOfFile = True
-            line = self.fileToRead.readline()
+                return
+            self.line = self.fileToRead.readline()
 
 
 class LineMaker:
@@ -67,39 +70,43 @@ class LineMaker:
             print("PREPARELINE: ERROR")
             return None
         if endOfColumn:  # the last line of the column - is to be aligned to left
-            line = ""
+            line = list()
             index = 0
             while index < (len(self.WordsOnLine) - 1):
-                line += self.WordsOnLine[index]
-                line += " "  # one space between words
+                line.append(self.WordsOnLine[index])
+                line.append(" ")  # one space between words
                 index += 1
-            line += self.WordsOnLine[len(self.WordsOnLine)-1]  # do not add a space after the last word
-            return line
+            line.append(self.WordsOnLine[len(self.WordsOnLine)-1])  # do not add a space after the last word
+            toReturn = ""
+            toReturn= toReturn.join(line)
+            return toReturn
         # regular line
         spacesToAdd = self.RemainingCapacity  # num of chars to be added to line
         spacesToFill = (len(self.WordsOnLine) - 1)  # number of spaces between words
         baseSpaces = (spacesToAdd // spacesToFill) + 1  # an amount of space chars to be put into every space between words
         spacesToDistribute = spacesToAdd % spacesToFill  # additional spaces to be added from left
-        line = ""
+        line = list()
         i = 0
         while i < spacesToDistribute:
-            line += self.WordsOnLine[i]
+            line.append(self.WordsOnLine[i])
             j = 0
             while j < (baseSpaces + 1):  # to the first spacesToDistribute spaces add one more space above baseSpaces
-                line += " "
+                line.append(" ")
                 j += 1
             i += 1
         i = spacesToDistribute
         while i < spacesToFill:
-            line += self.WordsOnLine[i]
+            line.append(self.WordsOnLine[i])
             j = 0
-            while j < baseSpaces: # rest of spaces fill with baseSpaces spaces
-                line += " "
+            while j < baseSpaces:  # rest of spaces fill with baseSpaces spaces
+                line.append(" ")
                 j += 1
             i += 1
         # add the last word with no spaces behind it
-        line += self.WordsOnLine[spacesToFill]  # spacesToFill = wordsOnLine.Count() -1
-        return line
+        line.append(self.WordsOnLine[spacesToFill])  # spacesToFill = wordsOnLine.Count() -1
+        toReturn = ""
+        toReturn = toReturn.join(line)
+        return toReturn
 
     def BuildAndPrintLine(self, word, endOfFile):
         added = self.TryAddWord(word)
@@ -204,6 +211,6 @@ if width < 1:
     print("Error")
     exit(1)
 
-reader = WordReader("testFile.in")
+reader = WordReader("stdin")
 lineMaker = LineMaker(width, reader)
 lineMaker.Justify2()
